@@ -52,3 +52,19 @@ function displayResult(eZ, eD, pZ_neededAttempts) {
         <p>You have a ${(pZ_neededAttempts * 100).toFixed(2)}% chance of killing your target!</p>
     `;
 }
+
+function getP(m, a) {
+    // an is the probability of succeeding the n-th hit, taking into account previous failures/successes
+    // an is defined by the sequence an+1 = an(m + a - m * an), according to probability rules (probability tree)
+    // m: multiplier of the probability of success of a hit following a failure (25%, 30% if persistent)
+    // a: probability of succeeding a hit if the previous one was successful (60% base, 72% expert, etc.)
+
+    let an = a;
+    for (let i = 0; i <= 1000; i++) {
+        an = an * (m + a - m * an);
+    }
+    // We calculate the limit of an to determine the probability of succeeding a hit when the number of hits is large
+    // (concretely, an converges around the 8/9th hit for a = 0.60)
+
+    return an;
+}
