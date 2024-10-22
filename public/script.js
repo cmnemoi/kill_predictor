@@ -127,6 +127,7 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
         chargesUsed += blasterCharges;
         const result = Math.min(shooterPa, blasterCharges);
         damages = damages * (n + result - blasterCharges) / (n + result) + 2.7 * blasterCharges / (n + result);
+        const eB = blasterCharges * (p * 5/6); // Expected hits for blaster
     }
 
     if (document.getElementById('lizaroJungle').checked) {
