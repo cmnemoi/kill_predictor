@@ -11,10 +11,10 @@ function calculate() {
     let p = setP(0.60); // success rate
     let baseDamages = setDamages(1.65); // base damage (bare hands), modified by skills
 
-    const { damages, chargesUsed } = calculateWeaponDamage(baseDamages, n, shooterPa);
+    const { damages, chargesUsed, totalExpectedHits } = calculateWeaponDamage(baseDamages, n, shooterPa, p);
 
     const adjustedN = n - chargesUsed;
-    const eZ = calculateExpectedHits(adjustedN, p);
+    const eZ = totalExpectedHits + calculateExpectedHits(adjustedN, p);
     const eD = Math.floor(eZ * damages);
 
     const neededAttempts = Math.ceil(hp / damages);
@@ -118,16 +118,18 @@ function setDamages(damages) {
     return damages;
 }
 
-function calculateWeaponDamage(baseDamage, n, shooterPa) {
+function calculateWeaponDamage(baseDamage, n, shooterPa, p) {
     let damages = baseDamage;
     let chargesUsed = 0;
+    let totalExpectedHits = 0;
 
     if (document.getElementById('blaster').checked) {
         const blasterCharges = parseInt(document.getElementById('blasterCharges').value);
         chargesUsed += blasterCharges;
         const result = Math.min(shooterPa, blasterCharges);
         damages = damages * (n + result - blasterCharges) / (n + result) + 2.7 * blasterCharges / (n + result);
-        const eB = blasterCharges * (p * 5/6); // Expected hits for blaster
+        const eB = blasterCharges * (p * 5/6);
+        totalExpectedHits += eB;
     }
 
     if (document.getElementById('lizaroJungle').checked) {
@@ -135,12 +137,16 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
         chargesUsed += lizaroCharges;
         const var2 = Math.min(shooterPa, lizaroCharges);
         damages = damages * (n + var2 - lizaroCharges) / (n + var2) + 3.65 * lizaroCharges / (n + var2);
+        const eL = lizaroCharges * 0.99;
+        totalExpectedHits += eL;
     }
 
     if (document.getElementById('grenadesNumber').value > 0) {
         const grenades = parseInt(document.getElementById('grenadesNumber').value);
         chargesUsed += grenades;
         damages = damages * (n - grenades) / n + 5 * grenades / n;
+        const eG = grenades;
+        totalExpectedHits += eG;
     }
 
     if (document.getElementById('natamy').checked) {
@@ -149,6 +155,8 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
         const var2 = Math.min(shooterPa, natamyCharges);
         const mushDamage = document.getElementById('mush').checked ? 8 : 2.65;
         damages = damages * (n + var2 - natamyCharges) / (n + var2) + mushDamage * natamyCharges / (n + var2);
+        const eN = natamyCharges * (p * 5/6);
+        totalExpectedHits += eN;
     }
 
     if (document.getElementById('rocketLauncher').checked) {
@@ -156,6 +164,8 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
         chargesUsed += rocketLauncherCharges;
         const var2 = Math.min(shooterPa, rocketLauncherCharges);
         damages = damages * (n + var2 - rocketLauncherCharges) / (n + var2) + 4.5 * rocketLauncherCharges / (n + var2);
+        const eR = rocketLauncherCharges * (p * 5/6);
+        totalExpectedHits += eR;
     }
 
     if (document.getElementById('machineGun').checked) {
@@ -163,7 +173,9 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
         chargesUsed += machineGunCharges;
         const result = Math.min(shooterPa, machineGunCharges);
         damages = damages * (n + result - machineGunCharges) / (n + result) + 2.7 * machineGunCharges / (n + result);
+        const eM = machineGunCharges * (p * 5/6);
+        totalExpectedHits += eM;
     }
 
-    return { damages, chargesUsed };
+    return { damages, chargesUsed, totalExpectedHits };
 }
