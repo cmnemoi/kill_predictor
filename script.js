@@ -7,10 +7,8 @@ function calculate() {
     const n = parseInt(document.getElementById('paNumber').value);
     const hp = parseInt(document.getElementById('hp').value);
     const shooterPa = parseInt(document.getElementById('shooterPa').value);
-    const failureMultiplier = 1.25;
 
-    let p = 0.60; // base success rate (bare hands)
-    p = setP(p); // apply skill modifiers
+    let p = setP(0.60); // success rate
     let damages = 1.65; // base damage (bare hands)
 
     const eZ = calculateExpectedHits(n, p);
