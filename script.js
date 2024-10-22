@@ -7,9 +7,10 @@ function calculate() {
     const n = parseInt(document.getElementById('paNumber').value);
     const hp = parseInt(document.getElementById('hp').value);
     const shooterPa = parseInt(document.getElementById('shooterPa').value);
-    const failureMultiplier = 1.25
+    const failureMultiplier = 1.25;
 
-    const p = getP(failureMultiplier, 0.60);
+    let p = 0.60; // base success rate (bare hands)
+    p = setP(p); // apply skill modifiers
     let damages = 1.65; // base damage (bare hands)
 
     const eZ = calculateExpectedHits(n, p);
@@ -68,4 +69,27 @@ function getP(m, a) {
     // (concretely, an converges around the 8/9th hit for a = 0.60)
 
     return an;
+}
+
+function setP(p) {
+    // if skills giving a bonus/malus to success are chosen, we modify the success rate
+    if (document.getElementById('expert').checked) {
+        p *= 1.20; // +20% success
+        p = getP(1.25, p); // getP returns the success of the skill taking into account the increase following failures
+    }
+    if (document.getElementById('elusive').checked) {
+        p *= 0.75; // -25% success
+        p = getP(1.25, p);
+    }
+
+    if (document.getElementById('creative').checked) {
+        p = 2 * p / (1 + p); // creative increases the success rate of a repeated action until no more PA is recovered
+        p = getP(1.25, p);
+    }
+    if (document.getElementById('persistent').checked) {
+        p = getP(1.30, p); // persistent increases the success of a failed action by 30% instead of 25
+    }
+
+    p = getP(1.25, p);
+    return p;
 }
