@@ -9,13 +9,16 @@ function calculate() {
     const shooterPa = parseInt(document.getElementById('shooterPa').value);
 
     let p = setP(0.60); // success rate
-    let damages = setDamages(1.65); // base damage (bare hands), modified by skills
+    let baseDamages = setDamages(1.65); // base damage (bare hands), modified by skills
 
-    const eZ = calculateExpectedHits(n, p);
+    const { damages, chargesUsed } = calculateWeaponDamage(baseDamages, n, shooterPa);
+
+    const adjustedN = n - chargesUsed;
+    const eZ = calculateExpectedHits(adjustedN, p);
     const eD = Math.floor(eZ * damages);
 
     const neededAttempts = Math.ceil(hp / damages);
-    const pZ_neededAttempts = calculateProbabilityOfKill(n, p, neededAttempts);
+    const pZ_neededAttempts = calculateProbabilityOfKill(adjustedN, p, neededAttempts);
 
     displayResult(eZ, eD, pZ_neededAttempts);
 }
@@ -113,4 +116,53 @@ function setDamages(damages) {
     }
 
     return damages;
+}
+
+function calculateWeaponDamage(baseDamage, n, shooterPa) {
+    let damages = baseDamage;
+    let chargesUsed = 0;
+
+    if (document.getElementById('blaster').checked) {
+        const blasterCharges = parseInt(document.getElementById('blasterCharges').value);
+        chargesUsed += blasterCharges;
+        const var = Math.min(shooterPa, blasterCharges);
+        damages = damages * (n + var - blasterCharges) / (n + var) + 2.7 * blasterCharges / (n + var);
+    }
+
+    if (document.getElementById('lizaroJungle').checked) {
+        const lizaroCharges = parseInt(document.getElementById('lizaroCharges').value);
+        chargesUsed += lizaroCharges;
+        const var2 = Math.min(shooterPa, lizaroCharges);
+        damages = damages * (n + var2 - lizaroCharges) / (n + var2) + 3.65 * lizaroCharges / (n + var2);
+    }
+
+    if (document.getElementById('grenadesNumber').value > 0) {
+        const grenades = parseInt(document.getElementById('grenadesNumber').value);
+        chargesUsed += grenades;
+        damages = damages * (n - grenades) / n + 5 * grenades / n;
+    }
+
+    if (document.getElementById('natamy').checked) {
+        const natamyCharges = parseInt(document.getElementById('natamyCharges').value);
+        chargesUsed += natamyCharges;
+        const var2 = Math.min(shooterPa, natamyCharges);
+        const mushDamage = document.getElementById('mush').checked ? 8 : 2.65;
+        damages = damages * (n + var2 - natamyCharges) / (n + var2) + mushDamage * natamyCharges / (n + var2);
+    }
+
+    if (document.getElementById('rocketLauncher').checked) {
+        const rocketLauncherCharges = parseInt(document.getElementById('rocketLauncherCharges').value);
+        chargesUsed += rocketLauncherCharges;
+        const var2 = Math.min(shooterPa, rocketLauncherCharges);
+        damages = damages * (n + var2 - rocketLauncherCharges) / (n + var2) + 4.5 * rocketLauncherCharges / (n + var2);
+    }
+
+    if (document.getElementById('machineGun').checked) {
+        const machineGunCharges = parseInt(document.getElementById('machineGunCharges').value);
+        chargesUsed += machineGunCharges;
+        const var = Math.min(shooterPa, machineGunCharges);
+        damages = damages * (n + var - machineGunCharges) / (n + var) + 2.7 * machineGunCharges / (n + var);
+    }
+
+    return { damages, chargesUsed };
 }
