@@ -9,7 +9,7 @@ function calculate() {
     const shooterPa = parseInt(document.getElementById('shooterPa').value);
 
     let p = setP(0.60); // success rate
-    let damages = 1.65; // base damage (bare hands)
+    let damages = setDamages(1.65); // base damage (bare hands), modified by skills
 
     const eZ = calculateExpectedHits(n, p);
     const eD = Math.floor(eZ * damages);
@@ -90,4 +90,27 @@ function setP(p) {
 
     p = getP(1.25, p);
     return p;
+}
+
+function setDamages(damages) {
+    // Combat skills and weapons: we modify the possible damages
+    if (document.getElementById('solid').checked) {
+        damages = 2.65;
+    } else if (document.getElementById('wrestler').checked) {
+        damages = 3.65;
+    } else if (document.getElementById('knife').checked) {
+        damages = 2.25;
+    }
+
+    if (document.getElementById('armor').checked) {
+        damages -= 1;
+    }
+    if (document.getElementById('roughneck').checked) {
+        damages -= 1;
+    }
+    if (document.getElementById('berserker').checked) {
+        damages -= 1;
+    }
+
+    return damages;
 }
