@@ -125,8 +125,8 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
     if (document.getElementById('blaster').checked) {
         const blasterCharges = parseInt(document.getElementById('blasterCharges').value);
         chargesUsed += blasterCharges;
-        const var = Math.min(shooterPa, blasterCharges);
-        damages = damages * (n + var - blasterCharges) / (n + var) + 2.7 * blasterCharges / (n + var);
+        const result = Math.min(shooterPa, blasterCharges);
+        damages = damages * (n + result - blasterCharges) / (n + result) + 2.7 * blasterCharges / (n + result);
     }
 
     if (document.getElementById('lizaroJungle').checked) {
@@ -160,8 +160,8 @@ function calculateWeaponDamage(baseDamage, n, shooterPa) {
     if (document.getElementById('machineGun').checked) {
         const machineGunCharges = parseInt(document.getElementById('machineGunCharges').value);
         chargesUsed += machineGunCharges;
-        const var = Math.min(shooterPa, machineGunCharges);
-        damages = damages * (n + var - machineGunCharges) / (n + var) + 2.7 * machineGunCharges / (n + var);
+        const result = Math.min(shooterPa, machineGunCharges);
+        damages = damages * (n + result - machineGunCharges) / (n + result) + 2.7 * machineGunCharges / (n + result);
     }
 
     return { damages, chargesUsed };
