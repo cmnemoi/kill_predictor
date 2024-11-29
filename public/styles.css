@@ -85,3 +85,19 @@ button:hover {
     background-color: #e9ecef;
     border-radius: 3px;
 }
+
+.github-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.github-link img {
+    width: 32px;
+    height: 32px;
+    transition: opacity 0.3s;
+}
+
+.github-link:hover img {
+    opacity: 0.8;
+}
